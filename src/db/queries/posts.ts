@@ -8,6 +8,26 @@ export type PostWithData = Post & {
   _count: { comments: number };
 };
  
+export const  fetchPostSearch = cache((term: string): Promise<PostWithData[]> => {
+  console.log('fetched post by slug')
+  return db.post.findMany({
+    where: {
+      OR : [
+        { 
+          title : {  contains : term} 
+        },
+        {
+          content : { contains : term}
+        }
+      ]
+    },
+    include: {
+      topic: { select: { slug: true } },
+      user: { select: { name: true , image : true} },
+      _count: { select: { comments: true } }, 
+    },
+  });
+})
 export const  fetchPostsByTopicSlug = cache((slug: string): Promise<PostWithData[]> => {
   console.log('fetched post by slug')
   return db.post.findMany({

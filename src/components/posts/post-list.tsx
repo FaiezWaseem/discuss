@@ -9,6 +9,8 @@ interface PostList {
 
 export default async function PostList({ fetchData }: PostList) {
 
+  new Promise( resolve => setTimeout(resolve , 2500))
+
   const posts = await fetchData();
 
   const renderedPosts = posts.map((post) => {
