@@ -1,5 +1,6 @@
-import type { Post, Prisma } from "@prisma/client";
+import type { Post} from "@prisma/client";
 import { db } from "@/db";
+import { cache } from "react";
  
 export type PostWithData = Post & {
     topic: { slug: string  };
@@ -7,13 +8,33 @@ export type PostWithData = Post & {
   _count: { comments: number };
 };
  
-export function fetchPostsByTopicSlug(slug: string): Promise<PostWithData[]> {
+export const  fetchPostsByTopicSlug = cache((slug: string): Promise<PostWithData[]> => {
+  console.log('fetched post by slug')
   return db.post.findMany({
     where: { topic: { slug } },
     include: {
       topic: { select: { slug: true } },
       user: { select: { name: true , image : true} },
-      _count: { select: { comments: true } },
+      _count: { select: { comments: true } }, 
     },
   });
-}
+})
+
+export const  fetchTopPosts = cache((): Promise<PostWithData[]> => {
+  console.log('fetched top posts')
+  return db.post.findMany({
+   orderBy : [
+    {
+      comments : {
+        _count : 'desc'
+      }
+    }
+   ],
+    include: {
+      topic: { select: { slug: true } },
+      user: { select: { name: true , image : true} },
+      _count: { select: { comments: true } }, 
+    },
+    take : 5
+  });
+})
