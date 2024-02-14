@@ -1,32 +1,19 @@
-import { Button } from "@nextui-org/react"
+import { Divider } from "@nextui-org/react"
+import TopicCreateForm from "@/components/topics/topic-create-form"
+import TopicLists from "@/components/topics/topic-lists"
 
-import { auth } from '@/auth'
-
-import * as actions from '@/actions'
-
-export default async function Home() {
-
-  const session = await auth();
-  if(session){
-    return <div className="container m-auto flex gap-3">
-      <p>
-         {session.user?.name}
-
-      </p>
-      <h1>
-         {session.user?.email}
-
-      </h1>
-      <form action={actions.signOut}>
-      <Button type="submit" variant={'bordered'} >signOut</Button>
-    </form>
+export default function Home() {
+  return <div className="grid grid-cols-4 gap-4 p-4" >
+    <div className="col-span-3">
+      <h1 className="text-xl- m-2" >Top Posts</h1>
     </div>
-  }
+    <div className="border shadow py-3 px-2" >
+      <TopicCreateForm />
+      <Divider className="my-2" />
+      <h1  className="text-[2.5em]" >Topics</h1>
+      <TopicLists />
+    </div>
 
-  return <div className="container m-auto flex gap-3">
-    <form action={actions.signIn}>
-      <Button type="submit" >signIn</Button>
-    </form>
-   
+
   </div>
 }

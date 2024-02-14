@@ -13,6 +13,7 @@ if(!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET){
 
 
 export const { handlers : { GET , POST}, auth , signOut, signIn} = NextAuth({
+    trustHost : true,
     adapter : PrismaAdapter(db),
     providers : [
         GitHub({
@@ -21,7 +22,7 @@ export const { handlers : { GET , POST}, auth , signOut, signIn} = NextAuth({
         })
     ],
     callbacks : {
-        // usually not needed here we are fixing a bug in nextAuth
+        // usually not needed but here we are fixing a bug in nextAuth
         async session({ session , user} : any){
             if(session && user){
                 session.user.id = user.id
